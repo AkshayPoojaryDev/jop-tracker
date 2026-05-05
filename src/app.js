@@ -1,15 +1,17 @@
 import express from "express";
 import dotenv from "dotenv";
-import pool from "./db/index.js";
+import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 
 const app = express();
+
 app.use(express.json());
 
-app.get("/", async (req, res) => {
-  const result = await pool.query("SELECT NOW()");
-  res.json(result.rows);
+app.use("/api/auth", authRoutes);
+
+app.get("/", (req, res) => {
+  res.send("API running...");
 });
 
 const PORT = process.env.PORT || 5000;
