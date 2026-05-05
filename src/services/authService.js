@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 // Register a new user
 export const registerNewUser = async (name , email, password) => {
     //check if user already exists
-    const user = await pool.query(
+    const exists = await pool.query(
         "SELECT * FROM users WHERE email = $1", [email]
     );
 
