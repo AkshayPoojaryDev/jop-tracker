@@ -9,6 +9,7 @@ export const register = async (req, res) => {
         user,
     });
     } catch (error) {   
+        console.log(error);  
         res.status(400).json({ error: error.message });
 };
 };
@@ -22,6 +23,7 @@ export const login = async (req, res) => {
         token:data.token,
     });
     } catch (error) {   
+        console.log(error);
         res.status(400).json({ error: error.message });
 };
 };

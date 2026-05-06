@@ -1,5 +1,5 @@
 import pool from "../db/index.js";
-import bycrypt from "bcrypt";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 // Register a new user
@@ -14,7 +14,7 @@ export const registerNewUser = async (name , email, password) => {
     }
 
     // hash the password
-    const hashedPassword = await bycrypt.hash(password, 10);
+     const hashedPassword = await bcrypt.hash(password, 10);
 
     // insert the new user into the database
     const result = await pool.query(
@@ -35,7 +35,8 @@ export const loginUser = async (email, password) => {
     const user= result.rows[0];
 
 // compare the password
-    const isMatch = await bycrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
+    
     if (!isMatch) {
         throw new Error("Invalid email or password");
     }

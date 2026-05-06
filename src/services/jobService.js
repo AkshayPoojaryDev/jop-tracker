@@ -19,7 +19,7 @@ export const createJob= async(
     [userId, company, role, status, applied_date, notes]
     );
     return result.rows[0];
-
+}
     // get user jobs
     export const getUserJobs = async (userId) => {
     const result = await pool.query(
@@ -31,4 +31,3 @@ export const createJob= async(
     return result.rows;
 
     }
-}
