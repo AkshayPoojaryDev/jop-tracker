@@ -1,53 +1,53 @@
-import {createJob , getUserJobs} from "../services/jobService.js";
+import { createJob, getJobs } from "../services/jobService.js";
 
-//create
-export const addJob=async(req,res)=>{
-    try{
-        const {company, role, status, applied_date, notes} = req.body;
-        const job= await createJob(
-            req.user.id,
-            company,
-            role,
-            status,
-            applied_date,
-            notes
-        );
-        res.status(201).json(job);
+// CREATE JOB
+export const addJob = async (req, res) => {
+  try {
+    const {
+      company,
+      role,
+      status,
+      applied_date,
+      notes,
+    } = req.body;
 
-    }catch (err) {
-  console.log(err);
+    // convert status to lowercase
+    const formattedStatus = status.toLowerCase();
 
-  res.status(500).json({
-    message: err.message,
-  });
-}
-     } //catch (error) {
-    //     console.log(req.body);
-    //     console.log(req.user);
-    //     res.status(500).json({ 
-    //         message: error.message 
-       //});
-//     }
-// };
-//get
+    // create job
+    const job = await createJob(
+      req.user.id,
+      company,
+      role,
+      formattedStatus,
+      applied_date,
+      notes
+    );
+
+    res.status(201).json(job);
+
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
+// GET USER JOBS
 export const fetchJobs = async (req, res) => {
-    try{
-        const job= await getUserJobs(req.user.id);
-        res.status(200).json(job);
-    }
-//     catch (error) {
-//         console.log(req.body);
-//         console.log(req.user);
-//         res.status(500).json({ 
-//             message: error.message
-//         });
-//     }
-// };
-catch (err) {
-  console.log(err);
+  try {
 
-  res.status(500).json({
-    message: err.message,
-  });
-}
-}
+    const jobs = await getJobs(req.user.id);
+
+    res.status(200).json(jobs);
+
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
