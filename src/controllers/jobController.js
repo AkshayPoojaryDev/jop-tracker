@@ -1,4 +1,4 @@
-import { createJob, getJobs } from "../services/jobService.js";
+import { createJob, getUserJobs , updateJob,deleteJob} from "../services/jobService.js";
 
 // CREATE JOB
 export const addJob = async (req, res) => {
@@ -51,3 +51,55 @@ export const fetchJobs = async (req, res) => {
     });
   }
 };
+
+export const editJob = async (req, res) => {
+  try{
+    const { company, role, status, applied_date, notes } = req.body;
+
+    const update= await updateJob(
+      req.params.id,
+      company,
+      role,
+      status,
+      applied_date,
+      notes
+    );
+    if (!update) {
+      return res.status(404).json({
+         message: "Job not found"
+         });
+         
+    }
+    res.update(200).json(update);
+  }
+  catch(err){
+    console.log(err);
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+}
+
+export const removeJob = async (req, res) => {
+  try {
+    const deleted= await deleteJob(
+      req.params.id,
+       req.user.id
+      );
+      if (!deleted) {
+        return res.status(404).json({
+           message: "Job not found"
+           });
+
+    }
+    res.status(200).json({
+      message: "Job deleted successfully"
+    });
+  }
+  catch(err){
+    console.log(err);
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+}
