@@ -21,15 +21,35 @@ export const createJob= async(
     return result.rows[0];
 }
     // get user jobs
-export const getUserJobs = async (userId) => {
-const result = await pool.query(
-  `SELECT * FROM job_applications
-   WHERE user_id = $1
-   ORDER BY created_at DESC`,
-  [userId]
-);
-return result.rows;
-}
+export const getUserJobs = async (
+  userId,
+  status,
+  limit = 5,
+  offset = 0
+) => {
+  let query = `
+    SELECT * FROM job_applications
+    WHERE user_id = $1
+  `;
+
+  const values = [userId];
+
+  // filter
+  if (status) {
+    query += ` AND status = $2`;
+    values.push(status);
+  }
+
+  query += `
+    ORDER BY created_at DESC
+    LIMIT ${limit}
+    OFFSET ${offset}
+  `;
+
+  const result = await pool.query(query, values);
+
+  return result.rows;
+};
 
 
     // update a job

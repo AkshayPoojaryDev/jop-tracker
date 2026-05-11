@@ -1,29 +1,48 @@
 import { registerNewUser,loginUser } from "../services/authService.js";
+import {
+  registerSchema,
+  loginSchema,
+} from "../validators/authValidator.js";
 
 export const register = async (req, res) => {
-    const {name, email, password} = req.body;
-    try {
-        const user = await registerNewUser(name, email, password);
+  try {
+    const validatedData =
+      registerSchema.parse(req.body);
+
+    const user = await registerUser(
+      validatedData.name,
+      validatedData.email,
+      validatedData.password
+    );
+
     res.status(201).json({
-        message: "User registered successfully",
-        user,
+      message: "User registered",
+      user,
     });
-    } catch (error) {   
-        console.log(error);  
-        res.status(400).json({ error: error.message });
-};
+  } catch (err) {
+    res.status(400).json({
+      error: err.message,
+    });
+  }
 };
 
 export const login = async (req, res) => {
-    const {email, password} = req.body;
-    try {
-        const data = await loginUser(email, password);
-    res.status(200).json({
-        message:"Login successful",
-        token:data.token,
+  try {
+    const validatedData =
+      loginSchema.parse(req.body);
+
+    const data = await loginUser(
+      validatedData.email,
+      validatedData.password
+    );
+
+    res.json({
+      message: "Login successful",
+      token: data.token,
     });
-    } catch (error) {   
-        console.log(error);
-        res.status(400).json({ error: error.message });
-};
+  } catch (err) {
+    res.status(401).json({
+      error: err.message,
+    });
+  }
 };

@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
 
 import jobRoutes from "./routes/jobRoutes.js";
+import errorMiddleware from "./middleware/errorMiddleware.js";
 
 
 dotenv.config();
@@ -13,6 +14,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
+app.use(errorMiddleware);
 
 app.get("/", (req, res) => {
   res.send("API running...");

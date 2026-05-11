@@ -1,36 +1,24 @@
 import { createJob, getUserJobs , updateJob,deleteJob} from "../services/jobService.js";
-
+import { jobSchema } from "../validators/jobValidator.js";
 // CREATE JOB
 export const addJob = async (req, res) => {
   try {
-    const {
-      company,
-      role,
-      status,
-      applied_date,
-      notes,
-    } = req.body;
+    const validatedData =
+      jobSchema.parse(req.body);
 
-    // convert status to lowercase
-    const formattedStatus = status.toLowerCase();
-
-    // create job
     const job = await createJob(
       req.user.id,
-      company,
-      role,
-      formattedStatus,
-      applied_date,
-      notes
+      validatedData.company,
+      validatedData.role,
+      validatedData.status,
+      validatedData.applied_date,
+      validatedData.notes
     );
 
     res.status(201).json(job);
-
   } catch (err) {
-    console.log(err);
-
-    res.status(500).json({
-      message: err.message,
+    res.status(400).json({
+      error: err.message,
     });
   }
 };
@@ -38,16 +26,19 @@ export const addJob = async (req, res) => {
 // GET USER JOBS
 export const fetchJobs = async (req, res) => {
   try {
+    const { status, limit, offset } = req.query;
 
-    const jobs = await getJobs(req.user.id);
+    const jobs = await getJobs(
+      req.user.id,
+      status,
+      limit,
+      offset
+    );
 
-    res.status(200).json(jobs);
-
+    res.json(jobs);
   } catch (err) {
-    console.log(err);
-
     res.status(500).json({
-      message: err.message,
+      error: err.message,
     });
   }
 };
